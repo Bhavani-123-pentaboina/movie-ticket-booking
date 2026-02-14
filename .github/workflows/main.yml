@@ -23,6 +23,6 @@ jobs:
           role-to-assume: arn:aws:iam::987473401265:role/IAM-ROLEE
           aws-region: ap-southeast-2
 
-      - name: Deploy index.html to S3
+      - name: Deploy dup.html to S3
         run: |
-          aws s3 cp index.html s3://aws-bucket-project-11/index.html
+          aws s3 cp index.html s3://aws-bucket-project-11/dup.html
