@@ -1,0 +1,3352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePrime - Movie Booking App</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #e50914;
+            --primary-dark: #b20710;
+            --dark: #141414;
+            --dark-light: #222;
+            --light: #f5f5f5;
+            --gray: #8c8c8b;
+            --transition: all 0.3s ease;
+            --success: #28a745;
+            --warning: #ffc107;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(to right, #141414, #222);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            border-bottom: 2px solid var(--primary);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .logo i {
+            font-size: 36px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 10px 0;
+            position: relative;
+            font-size: 16px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 2px;
+        }
+
+        /* Auth Buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-auth {
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-login:hover {
+            background-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-register {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        .btn-register:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: white;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            border-radius: 10px;
+            padding: 15px 0;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #333;
+            display: none;
+            z-index: 1001;
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .dropdown-item {
+            padding: 12px 20px;
+            color: #aaa;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: var(--transition);
+            font-size: 15px;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(229, 9, 20, 0.1);
+            color: var(--primary);
+            padding-left: 25px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #333;
+            margin: 10px 0;
+        }
+
+        /* Auth Modals */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 3000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-content {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            margin: 80px auto;
+            width: 95%;
+            max-width: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        .auth-header {
+            padding: 40px;
+            background: linear-gradient(45deg, #222, #1a1a1a);
+            border-bottom: 3px solid var(--primary);
+            text-align: center;
+        }
+
+        .auth-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+            color: white;
+            font-weight: 800;
+        }
+
+        .auth-subtitle {
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            border-bottom: 2px solid #333;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            color: #aaa;
+            border-bottom: 3px solid transparent;
+        }
+
+        .auth-tab.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: rgba(229, 9, 20, 0.05);
+        }
+
+        .auth-body {
+            padding: 40px;
+        }
+
+        .auth-form {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            font-weight: 700;
+            color: #ddd;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+        }
+
+        .form-group input {
+            padding: 15px 20px;
+            border-radius: 10px;
+            border: 2px solid #444;
+            background: #1a1a1a;
+            color: white;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #333;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #aaa;
+            font-size: 15px;
+        }
+
+        .remember-me input {
+            width: 18px;
+            height: 18px;
+        }
+
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 15px;
+            transition: var(--transition);
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+
+        .auth-error {
+            background: rgba(229, 9, 20, 0.1);
+            border: 1px solid var(--primary);
+            color: #ff6b6b;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-error.show {
+            display: flex;
+        }
+
+        .auth-success {
+            background: rgba(40, 167, 69, 0.1);
+            border: 1px solid var(--success);
+            color: #28a745;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-success.show {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.9)), 
+                        url('https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&h=600&fit=crop&auto=format');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            margin-bottom: 50px;
+            border-bottom: 3px solid var(--primary);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 52px;
+            margin-bottom: 25px;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            background: linear-gradient(45deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 20px;
+            margin-bottom: 40px;
+            color: #ddd;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 16px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 18px;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.4);
+            background: linear-gradient(45deg, var(--primary-dark), var(--primary));
+        }
+
+        .btn i {
+            font-size: 20px;
+        }
+
+        /* Section Styles */
+        section {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #333;
+        }
+
+        .section-title {
+            font-size: 36px;
+            position: relative;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section-title i {
+            color: var(--primary);
+            font-size: 32px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        .movie-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        /* Movie Card Styles */
+        .movie-card {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            border: 1px solid #333;
+            position: relative;
+        }
+
+        .movie-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+            border-color: var(--primary);
+        }
+
+        .movie-poster {
+            width: 100%;
+            height: 370px;
+            object-fit: cover;
+            transition: var(--transition);
+        }
+
+        .movie-card:hover .movie-poster {
+            transform: scale(1.05);
+        }
+
+        .movie-info {
+            padding: 20px;
+        }
+
+        .movie-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: 700;
+        }
+
+        .movie-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--gray);
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .rating {
+            color: #ffc107;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 16px;
+        }
+
+        .movie-overview {
+            font-size: 15px;
+            color: #aaa;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            margin-bottom: 20px;
+            height: 66px;
+            line-height: 1.6;
+        }
+
+        .movie-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 15px;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(229, 9, 20, 0.3);
+        }
+
+        /* Showtimes Section */
+        .showtimes-section {
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            border-top: 2px solid #333;
+            border-bottom: 2px solid #333;
+        }
+
+        .dates-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            overflow-x: auto;
+            padding: 15px 0;
+            gap: 15px;
+        }
+
+        .date-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 25px;
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            border-radius: 12px;
+            min-width: 120px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .date-item.active {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(229, 9, 20, 0.3);
+        }
+
+        .date-item:hover:not(.active) {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .date-day {
+            font-size: 18px;
+            font-weight: 700;
+            color: #aaa;
+        }
+
+        .date-item.active .date-day {
+            color: white;
+        }
+
+        .date-num {
+            font-size: 32px;
+            font-weight: 800;
+            margin: 8px 0;
+            color: white;
+        }
+
+        .date-month {
+            font-size: 16px;
+            color: #aaa;
+            font-weight: 600;
+        }
+
+        .date-item.active .date-month {
+            color: white;
+        }
+
+        .showtimes-container {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+            border: 1px solid #333;
+        }
+
+        .showtime-movie {
+            display: flex;
+            margin-bottom: 30px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #333;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .showtime-movie:hover {
+            background: rgba(229, 9, 20, 0.1);
+            border-color: var(--primary);
+        }
+
+        .showtime-movie:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .showtime-poster {
+            width: 140px;
+            height: 210px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-right: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .showtime-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .showtime-title {
+            font-size: 26px;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .showtime-meta {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            color: var(--gray);
+            font-size: 16px;
+            align-items: center;
+        }
+
+        .showtime-rating {
+            color: #ffc107;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .showtime-times {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .time-slot {
+            background: linear-gradient(45deg, #333, #444);
+            padding: 12px 25px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            border: 2px solid transparent;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+
+        .time-slot:hover {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(229, 9, 20, 0.3);
+            border-color: var(--primary);
+        }
+
+        .time-slot.selected {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+        }
+
+        /* Booking Process Steps */
+        .booking-process {
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            padding: 80px 0;
+        }
+
+        .booking-steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+
+        .booking-step {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .booking-step:hover {
+            transform: translateY(-10px);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .booking-step::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+        }
+
+        .step-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 36px;
+            color: white;
+            box-shadow: 0 5px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .step-title {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .step-description {
+            color: #aaa;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            margin: 40px auto;
+            width: 95%;
+            max-width: 1200px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #333;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+            border: 2px solid #444;
+        }
+
+        .close-modal:hover {
+            background: var(--primary);
+            transform: rotate(90deg);
+            border-color: var(--primary);
+        }
+
+        .modal-backdrop {
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .modal-backdrop::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent, var(--dark-light));
+        }
+
+        .modal-poster {
+            position: absolute;
+            bottom: -60px;
+            left: 50px;
+            width: 220px;
+            height: 330px;
+            object-fit: cover;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7);
+            z-index: 5;
+            border: 3px solid white;
+        }
+
+        .modal-details {
+            padding: 70px 50px 50px;
+        }
+
+        .modal-header {
+            margin-bottom: 30px;
+        }
+
+        .modal-title {
+            font-size: 42px;
+            margin-bottom: 15px;
+            line-height: 1.2;
+            background: linear-gradient(45deg, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-tagline {
+            font-style: italic;
+            color: var(--primary);
+            font-size: 18px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .modal-meta {
+            display: flex;
+            gap: 25px;
+            color: var(--gray);
+            font-size: 17px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .modal-rating {
+            color: #ffc107;
+            font-weight: 700;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-genres {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .genre {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 15px;
+            font-weight: 600;
+            box-shadow: 0 3px 10px rgba(229, 9, 20, 0.3);
+        }
+
+        .modal-overview {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: #ddd;
+        }
+
+        /* Booking Modal */
+        .booking-modal-content {
+            background: linear-gradient(145deg, var(--dark-light), #1a1a1a);
+            margin: 30px auto;
+            width: 95%;
+            max-width: 1000px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid #333;
+        }
+
+        .booking-header {
+            padding: 40px;
+            background: linear-gradient(45deg, #222, #1a1a1a);
+            border-bottom: 3px solid var(--primary);
+            text-align: center;
+        }
+
+        .booking-title {
+            font-size: 36px;
+            margin-bottom: 15px;
+            color: white;
+            font-weight: 800;
+        }
+
+        .booking-subtitle {
+            color: #aaa;
+            font-size: 18px;
+        }
+
+        .booking-progress {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 0;
+            padding: 0 40px;
+            position: relative;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .progress-step.active .step-number {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            border-color: var(--primary);
+            transform: scale(1.1);
+        }
+
+        .progress-step.completed .step-number {
+            background: linear-gradient(45deg, var(--success), #1e7e34);
+            border-color: var(--success);
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            border: 3px solid #444;
+            transition: var(--transition);
+        }
+
+        .step-label {
+            font-size: 14px;
+            color: #aaa;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .progress-step.active .step-label {
+            color: var(--primary);
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: #333;
+            z-index: 1;
+        }
+
+        .progress-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        .booking-body {
+            padding: 40px;
+        }
+
+        .booking-form {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .booking-form.active {
+            display: block;
+        }
+
+        .booking-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #333;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            border: 2px solid #444;
+            padding: 15px 35px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer {
+            background: linear-gradient(to right, #141414, #1a1a1a);
+            padding: 70px 0 30px;
+            margin-top: 80px;
+            border-top: 3px solid var(--primary);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 50px;
+            margin-bottom: 50px;
+        }
+
+        .footer-section h3 {
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--primary);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #aaa;
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            padding-left: 10px;
+        }
+
+        .footer-links a i {
+            width: 20px;
+            color: var(--primary);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .social-icons a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: #333;
+            border-radius: 50%;
+            color: white;
+            transition: var(--transition);
+            font-size: 20px;
+        }
+
+        .social-icons a:hover {
+            background: var(--primary);
+            transform: translateY(-5px) rotate(10deg);
+            box-shadow: 0 5px 20px rgba(229, 9, 20, 0.3);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 2px solid #333;
+            color: var(--gray);
+            font-size: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weather-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 30px;
+            border: 1px solid #333;
+        }
+
+        .weather-info i {
+            color: #ffc107;
+            font-size: 24px;
+        }
+
+        .weather-temp {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .weather-condition {
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 1200px) {
+            .seat-map {
+                grid-template-columns: repeat(10, 1fr);
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 42px;
+            }
+            
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            }
+            
+            .modal-title {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .nav-links {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                order: 3;
+                margin-top: 15px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .booking-progress {
+                flex-direction: column;
+                gap: 40px;
+            }
+            
+            .progress-line {
+                display: none;
+            }
+            
+            .modal-poster {
+                width: 180px;
+                height: 270px;
+                left: 20px;
+            }
+            
+            .modal-details {
+                padding: 40px 25px 25px;
+            }
+            
+            .copyright {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero {
+                padding: 60px 0;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .movie-grid {
+                grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+                gap: 20px;
+            }
+            
+            .movie-poster {
+                height: 270px;
+            }
+            
+            .date-item {
+                min-width: 100px;
+                padding: 15px;
+            }
+            
+            .booking-steps-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .modal-backdrop {
+                height: 300px;
+            }
+            
+            .modal-poster {
+                width: 140px;
+                height: 210px;
+                bottom: -40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="#" class="logo">
+                <i class="fas fa-film"></i>
+                <span>CinePrime</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#now-playing" class="active">Now Playing</a></li>
+                <li><a href="#coming-soon">Coming Soon</a></li>
+                <li><a href="#showtimes">Showtimes</a></li>
+                <li><a href="#booking-process">Book Tickets</a></li>
+            </ul>
+            
+            <!-- Authentication Buttons (shown when not logged in) -->
+            <div class="auth-buttons" id="auth-buttons">
+                <button class="btn-auth btn-login" id="open-login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <button class="btn-auth btn-register" id="open-register">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+            </div>
+            
+            <!-- User Profile (shown when logged in) -->
+            <div class="user-profile" id="user-profile" style="display: none;">
+                <div class="user-avatar" id="user-avatar">JD</div>
+                <span class="user-name" id="user-name">John Doe</span>
+                <div class="dropdown-menu" id="user-dropdown">
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-user"></i> My Profile
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-ticket-alt"></i> My Bookings
+                    </a>
+                    <a href="#" class="dropdown-item">
+                        <i class="fas fa-heart"></i> My Favorites
+                    </a>
+                    <div class="dropdown-divider"></div>
+                    <a href="#" class="dropdown-item" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Modal -->
+    <div id="login-modal" class="auth-modal">
+        <div class="auth-content">
+            <div class="close-modal" id="close-login-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="auth-header">
+                <h2 class="auth-title">Welcome Back</h2>
+                <p class="auth-subtitle">Sign in to your account to continue</p>
+            </div>
+            
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="login-tab">Login</div>
+                <div class="auth-tab" id="register-tab">Register</div>
+            </div>
+            
+            <div class="auth-body">
+                <div class="auth-error" id="login-error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span id="login-error-text">Invalid credentials. Please try again.</span>
+                </div>
+                
+                <form id="login-form" class="auth-form active">
+                    <div class="form-group">
+                        <label for="login-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input type="email" id="login-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="login-password">
+                            <i class="fas fa-lock"></i> Password
+                        </label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required>
+                    </div>
+                    
+                    <div class="form-footer">
+                        <label class="remember-me">
+                            <input type="checkbox" id="remember-me">
+                            <span>Remember me</span>
+                        </label>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-sign-in-alt"></i> Sign In
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 30px; color: #aaa;">
+                        <p>Don't have an account? <a href="#" class="forgot-password" id="switch-to-register">Register here</a></p>
+                    </div>
+                </form>
+                
+                <form id="register-form" class="auth-form">
+                    <div class="auth-success" id="register-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Registration successful! You can now login.</span>
+                    </div>
+                    
+                    <div class="auth-error" id="register-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span id="register-error-text">Error during registration.</span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-firstname">
+                                <i class="fas fa-user"></i> First Name
+                            </label>
+                            <input type="text" id="register-firstname" placeholder="Enter first name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-lastname">
+                                <i class="fas fa-user"></i> Last Name
+                            </label>
+                            <input type="text" id="register-lastname" placeholder="Enter last name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-email">
+                            <i class="fas fa-envelope"></i> Email Address
+                        </label>
+                        <input type="email" id="register-email" placeholder="Enter your email" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="register-password">
+                                <i class="fas fa-lock"></i> Password
+                            </label>
+                            <input type="password" id="register-password" placeholder="Create password" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="register-confirm">
+                                <i class="fas fa-lock"></i> Confirm Password
+                            </label>
+                            <input type="password" id="register-confirm" placeholder="Confirm password" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="register-phone">
+                            <i class="fas fa-phone"></i> Phone Number
+                        </label>
+                        <input type="tel" id="register-phone" placeholder="Enter phone number">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="remember-me">
+                            <input type="checkbox" id="terms-agreement" required>
+                            <span>I agree to the <a href="#" class="forgot-password">Terms & Conditions</a></span>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn" style="width: 100%; margin-top: 20px;">
+                        <i class="fas fa-user-plus"></i> Create Account
+                    </button>
+                    
+                    <div style="text-align: center; margin-top: 30px; color: #aaa;">
+                        <p>Already have an account? <a href="#" class="forgot-password" id="switch-to-login">Login here</a></p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container hero-content">
+            <h1>Experience Movies Like Never Before</h1>
+            <p>Book tickets for the latest blockbusters at our state-of-the-art theaters. Immerse yourself in stunning visuals and crystal-clear sound.</p>
+            <a href="#booking-process" class="btn">
+                <i class="fas fa-ticket-alt"></i>
+                Book Tickets Now
+            </a>
+        </div>
+    </section>
+
+    <!-- Now Playing Section -->
+    <section id="now-playing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-play-circle"></i>
+                    Now Playing
+                </h2>
+                <a href="#showtimes" class="btn-outline">
+                    <i class="fas fa-clock"></i>
+                    View Showtimes
+                </a>
+            </div>
+            <div class="movie-grid" id="now-playing-movies">
+                <!-- Movie cards will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Coming Soon Section -->
+    <section id="coming-soon" style="background: linear-gradient(135deg, #1a1a1a, #222);">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-calendar-alt"></i>
+                    Coming Soon
+                </h2>
+            </div>
+            <div class="movie-grid" id="coming-soon-movies">
+                <!-- Movie cards will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Showtimes Section -->
+    <section id="showtimes" class="showtimes-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-clock"></i>
+                    Showtimes
+                </h2>
+                <div class="dates-container" id="dates-container">
+                    <!-- Dates will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="showtimes-container" id="showtimes-container">
+                <!-- Showtimes will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Booking Process -->
+    <section id="booking-process" class="booking-process">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-ticket-alt"></i>
+                    How to Book Tickets
+                </h2>
+            </div>
+            <p style="text-align: center; color: #aaa; font-size: 18px; max-width: 800px; margin: 0 auto 30px;">
+                Follow these simple steps to book your movie tickets online
+            </p>
+            
+            <div class="booking-steps-container">
+                <div class="booking-step">
+                    <div class="step-icon">1</div>
+                    <h3 class="step-title">Login & Choose Movie</h3>
+                    <p class="step-description">Sign in to your account and select from our wide range of Now Playing movies.</p>
+                </div>
+                
+                <div class="booking-step">
+                    <div class="step-icon">2</div>
+                    <h3 class="step-title">Pick Date & Time</h3>
+                    <p class="step-description">Choose your preferred show date and time from available showtimes.</p>
+                </div>
+                
+                <div class="booking-step">
+                    <div class="step-icon">3</div>
+                    <h3 class="step-title">Select Seats</h3>
+                    <p class="step-description">Pick your favorite seats from our interactive seat map.</p>
+                </div>
+                
+                <div class="booking-step">
+                    <div class="step-icon">4</div>
+                    <h3 class="step-title">Confirm & Pay</h3>
+                    <p class="step-description">Review your booking details and complete payment securely.</p>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="color: #aaa; font-size: 16px; margin-bottom: 20px;">
+                    You need to be logged in to book tickets. Don't have an account?
+                </p>
+                <button class="btn" id="hero-register-btn">
+                    <i class="fas fa-user-plus"></i> Create Free Account
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Movie Details Modal -->
+    <div id="movie-modal" class="modal">
+        <div class="modal-content">
+            <div class="close-modal" id="close-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="modal-backdrop" id="modal-backdrop">
+                <!-- Backdrop image will be set via JS -->
+            </div>
+            <img id="modal-poster" class="modal-poster" src="" alt="Movie Poster">
+            <div class="modal-details">
+                <div class="modal-header">
+                    <h2 id="modal-title" class="modal-title">Movie Title</h2>
+                    <p id="modal-tagline" class="modal-tagline">Tagline goes here</p>
+                    <div class="modal-meta">
+                        <span id="modal-runtime">0 min</span>
+                        <span>•</span>
+                        <span id="modal-release-date">2024</span>
+                        <span>•</span>
+                        <span class="modal-rating" id="modal-rating">
+                            <i class="fas fa-star"></i> 0.0
+                        </span>
+                    </div>
+                </div>
+                <div class="modal-genres" id="modal-genres">
+                    <!-- Genres will be inserted here -->
+                </div>
+                <p id="modal-overview" class="modal-overview">Movie overview will appear here.</p>
+                <button class="btn" id="book-ticket-btn">
+                    <i class="fas fa-ticket-alt"></i>
+                    Book Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="booking-modal-content">
+            <div class="close-modal" id="close-booking-modal">
+                <i class="fas fa-times"></i>
+            </div>
+            
+            <div class="booking-header">
+                <h2 class="booking-title" id="booking-title">Book Tickets</h2>
+                <p class="booking-subtitle" id="booking-subtitle">Select your seats and complete your booking</p>
+            </div>
+            
+            <div class="booking-body">
+                <!-- Login Required Message -->
+                <div id="booking-login-required" style="text-align: center; padding: 60px 40px;">
+                    <div style="width: 100px; height: 100px; background: linear-gradient(45deg, var(--primary), var(--primary-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; font-size: 40px; color: white;">
+                        <i class="fas fa-user-lock"></i>
+                    </div>
+                    <h3 style="font-size: 28px; margin-bottom: 20px; color: white;">Login Required</h3>
+                    <p style="color: #aaa; margin-bottom: 30px; font-size: 18px;">
+                        You need to be logged in to book movie tickets. Please sign in or create an account to continue.
+                    </p>
+                    <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+                        <button class="btn" id="booking-login-btn">
+                            <i class="fas fa-sign-in-alt"></i> Login Now
+                        </button>
+                        <button class="btn-outline" id="booking-register-btn">
+                            <i class="fas fa-user-plus"></i> Create Account
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Booking Form (shown when logged in) -->
+                <div id="booking-form-container" style="display: none;">
+                    <!-- Booking form steps will be inserted here by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-film"></i> CinePrime Theaters</h3>
+                    <p style="color: #aaa; line-height: 1.8; margin-bottom: 20px;">
+                        Experience the magic of cinema in our state-of-the-art theaters with IMAX, Dolby Atmos, and luxury seating. Premium movie experience like never before.
+                    </p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-link"></i> Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#now-playing"><i class="fas fa-play-circle"></i> Now Playing</a></li>
+                        <li><a href="#coming-soon"><i class="fas fa-calendar-alt"></i> Coming Soon</a></li>
+                        <li><a href="#showtimes"><i class="fas fa-clock"></i> Showtimes</a></li>
+                        <li><a href="#booking-process"><i class="fas fa-ticket-alt"></i> Book Tickets</a></li>
+                        <li><a href="#"><i class="fas fa-gift"></i> Gift Cards</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3><i class="fas fa-address-card"></i> Contact Us</h3>
+                    <ul class="footer-links">
+                        <li><a href="#"><i class="fas fa-map-marker-alt"></i> 123 Cinema Street, Movie City, MC 10001</a></li>
+                        <li><a href="tel:+15551234567"><i class="fas fa-phone"></i> (555) 123-4567</a></li>
+                        <li><a href="mailto:info@cineprime.com"><i class="fas fa-envelope"></i> info@cineprime.com</a></li>
+                        <li><a href="#"><i class="fas fa-clock"></i> Open Daily: 10:00 AM - 2:00 AM</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <div style="text-align: left;">
+                    <p>&copy; 2024 CinePrime Theaters. All rights reserved.</p>
+                    <p style="font-size: 13px; color: #777; margin-top: 5px;">
+                        Privacy Policy | Terms of Service | Cookie Policy
+                    </p>
+                </div>
+                <div class="weather-info">
+                    <i class="fas fa-sun"></i>
+                    <div>
+                        <div class="weather-temp">27°C</div>
+                        <div class="weather-condition">Sunny</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // USER AUTHENTICATION SYSTEM
+        // ============================================
+        
+        // User data storage (in real app, this would be server-side)
+        let users = JSON.parse(localStorage.getItem('cineprime_users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('cineprime_current_user')) || null;
+        
+        // DOM Elements for auth
+        const authButtons = document.getElementById('auth-buttons');
+        const userProfile = document.getElementById('user-profile');
+        const userAvatar = document.getElementById('user-avatar');
+        const userName = document.getElementById('user-name');
+        const userDropdown = document.getElementById('user-dropdown');
+        const logoutBtn = document.getElementById('logout-btn');
+        
+        const loginModal = document.getElementById('login-modal');
+        const registerModal = loginModal; // Same modal, different tabs
+        const openLoginBtn = document.getElementById('open-login');
+        const openRegisterBtn = document.getElementById('open-register');
+        const heroRegisterBtn = document.getElementById('hero-register-btn');
+        const closeLoginModal = document.getElementById('close-login-modal');
+        const loginTab = document.getElementById('login-tab');
+        const registerTab = document.getElementById('register-tab');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+        
+        const loginError = document.getElementById('login-error');
+        const loginErrorText = document.getElementById('login-error-text');
+        const registerError = document.getElementById('register-error');
+        const registerErrorText = document.getElementById('register-error-text');
+        const registerSuccess = document.getElementById('register-success');
+        
+        // Booking modal auth elements
+        const bookingLoginRequired = document.getElementById('booking-login-required');
+        const bookingFormContainer = document.getElementById('booking-form-container');
+        const bookingLoginBtn = document.getElementById('booking-login-btn');
+        const bookingRegisterBtn = document.getElementById('booking-register-btn');
+        
+        // ============================================
+        // AUTHENTICATION FUNCTIONS
+        // ============================================
+        
+        function updateAuthUI() {
+            if (currentUser) {
+                // User is logged in
+                authButtons.style.display = 'none';
+                userProfile.style.display = 'flex';
+                
+                // Update user info
+                const initials = (currentUser.firstName.charAt(0) + currentUser.lastName.charAt(0)).toUpperCase();
+                userAvatar.textContent = initials;
+                userName.textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            } else {
+                // User is not logged in
+                authButtons.style.display = 'flex';
+                userProfile.style.display = 'none';
+            }
+        }
+        
+        function loginUser(email, password) {
+            // Find user by email
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                // Remove password from user object before storing
+                const { password, ...userWithoutPassword } = user;
+                currentUser = userWithoutPassword;
+                
+                // Save to localStorage
+                localStorage.setItem('cineprime_current_user', JSON.stringify(currentUser));
+                
+                // Update UI
+                updateAuthUI();
+                
+                // Close modal
+                closeAuthModal();
+                
+                // Show success message
+                showNotification('Login successful!', 'success');
+                
+                return true;
+            } else {
+                // Show error
+                loginErrorText.textContent = 'Invalid email or password';
+                loginError.classList.add('show');
+                return false;
+            }
+        }
+        
+        function registerUser(userData) {
+            // Check if user already exists
+            const existingUser = users.find(u => u.email === userData.email);
+            
+            if (existingUser) {
+                registerErrorText.textContent = 'User with this email already exists';
+                registerError.classList.add('show');
+                return false;
+            }
+            
+            // Check if passwords match
+            if (userData.password !== userData.confirmPassword) {
+                registerErrorText.textContent = 'Passwords do not match';
+                registerError.classList.add('show');
+                return false;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                email: userData.email,
+                password: userData.password,
+                phone: userData.phone,
+                joinDate: new Date().toISOString(),
+                bookings: []
+            };
+            
+            // Add to users array
+            users.push(newUser);
+            
+            // Save to localStorage
+            localStorage.setItem('cineprime_users', JSON.stringify(users));
+            
+            // Show success message
+            registerSuccess.classList.add('show');
+            registerError.classList.remove('show');
+            
+            // Switch to login tab after delay
+            setTimeout(() => {
+                switchToLoginTab();
+            }, 1500);
+            
+            return true;
+        }
+        
+        function logoutUser() {
+            // Clear current user
+            currentUser = null;
+            localStorage.removeItem('cineprime_current_user');
+            
+            // Update UI
+            updateAuthUI();
+            
+            // Hide dropdown
+            userDropdown.classList.remove('show');
+            
+            // Show notification
+            showNotification('Logged out successfully', 'info');
+        }
+        
+        function openAuthModal(tab = 'login') {
+            loginModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            if (tab === 'register') {
+                switchToRegisterTab();
+            } else {
+                switchToLoginTab();
+            }
+        }
+        
+        function closeAuthModal() {
+            loginModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Reset forms
+            loginForm.reset();
+            registerForm.reset();
+            loginError.classList.remove('show');
+            registerError.classList.remove('show');
+            registerSuccess.classList.remove('show');
+        }
+        
+        function switchToLoginTab() {
+            loginTab.classList.add('active');
+            registerTab.classList.remove('active');
+            loginForm.classList.add('active');
+            registerForm.classList.remove('active');
+            registerSuccess.classList.remove('show');
+            registerError.classList.remove('show');
+        }
+        
+        function switchToRegisterTab() {
+            registerTab.classList.add('active');
+            loginTab.classList.remove('active');
+            registerForm.classList.add('active');
+            loginForm.classList.remove('active');
+            loginError.classList.remove('show');
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `notification notification-${type}`;
+            notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            // Style notification
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: ${type === 'success' ? 'linear-gradient(45deg, #28a745, #1e7e34)' : 
+                              type === 'error' ? 'linear-gradient(45deg, var(--primary), var(--primary-dark))' : 
+                              'linear-gradient(45deg, #333, #444)'};
+                color: white;
+                padding: 15px 25px;
+                border-radius: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+                z-index: 9999;
+                animation: slideInRight 0.3s ease;
+            `;
+            
+            // Add to body
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOutRight 0.3s ease';
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // Add CSS for notifications animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                from { transform: translateX(0); opacity: 1; }
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+        
+        // ============================================
+        // EVENT LISTENERS FOR AUTH
+        // ============================================
+        
+        // Open login modal
+        openLoginBtn.addEventListener('click', () => openAuthModal('login'));
+        openRegisterBtn.addEventListener('click', () => openAuthModal('register'));
+        heroRegisterBtn.addEventListener('click', () => openAuthModal('register'));
+        
+        // Close login modal
+        closeLoginModal.addEventListener('click', closeAuthModal);
+        window.addEventListener('click', (event) => {
+            if (event.target === loginModal) closeAuthModal();
+        });
+        
+        // Switch between login and register tabs
+        loginTab.addEventListener('click', switchToLoginTab);
+        registerTab.addEventListener('click', switchToRegisterTab);
+        switchToRegister.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToRegisterTab();
+        });
+        switchToLogin.addEventListener('click', (e) => {
+            e.preventDefault();
+            switchToLoginTab();
+        });
+        
+        // Login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+            
+            if (!email || !password) {
+                loginErrorText.textContent = 'Please fill in all fields';
+                loginError.classList.add('show');
+                return;
+            }
+            
+            loginUser(email, password);
+        });
+        
+        // Register form submission
+        registerForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('register-firstname').value.trim();
+            const lastName = document.getElementById('register-lastname').value.trim();
+            const email = document.getElementById('register-email').value.trim();
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            const phone = document.getElementById('register-phone').value.trim();
+            
+            // Validation
+            if (!firstName || !lastName || !email || !password || !confirmPassword) {
+                registerErrorText.textContent = 'Please fill in all required fields';
+                registerError.classList.add('show');
+                return;
+            }
+            
+            if (password.length < 6) {
+                registerErrorText.textContent = 'Password must be at least 6 characters';
+                registerError.classList.add('show');
+                return;
+            }
+            
+            const userData = {
+                firstName,
+                lastName,
+                email,
+                password,
+                confirmPassword,
+                phone
+            };
+            
+            registerUser(userData);
+        });
+        
+        // User dropdown
+        userAvatar.addEventListener('click', () => {
+            userDropdown.classList.toggle('show');
+        });
+        
+        // Logout
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            logoutUser();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (event) => {
+            if (!event.target.closest('.user-profile') && userDropdown.classList.contains('show')) {
+                userDropdown.classList.remove('show');
+            }
+        });
+        
+        // ============================================
+        // BOOKING AUTH INTEGRATION
+        // ============================================
+        
+        // Override the startBooking function to check authentication
+        const originalStartBooking = window.startBooking;
+        window.startBooking = function(movie) {
+            if (!currentUser) {
+                // Show login required message in booking modal
+                bookingLoginRequired.style.display = 'block';
+                bookingFormContainer.style.display = 'none';
+                
+                // Open booking modal
+                bookingModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                return;
+            }
+            
+            // If logged in, proceed with original booking
+            originalStartBooking.call(this, movie);
+        };
+        
+        // Booking modal auth buttons
+        bookingLoginBtn.addEventListener('click', () => {
+            closeBookingModal();
+            openAuthModal('login');
+        });
+        
+        bookingRegisterBtn.addEventListener('click', () => {
+            closeBookingModal();
+            openAuthModal('register');
+        });
+        
+        // ============================================
+        // INITIALIZE AUTH ON PAGE LOAD
+        // ============================================
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // Update auth UI based on current user
+            updateAuthUI();
+            
+            // Load other components
+            loadMovies();
+            loadDates();
+            loadShowtimes();
+            setupEventListeners();
+            
+            // Initialize with today's date
+            const today = new Date();
+            selectedDate = formatDate(today);
+            updateSelectedDate();
+        });
+        
+        // ============================================
+        // MOVIE DATA & INITIALIZATION
+        // ============================================
+        
+        // Movie data (from your original code)
+        const nowPlayingMovies = [
+            {
+                id: 1,
+                title: "The Dark Knight Returns",
+                overview: "When Gotham's darkest hour arrives, the legendary hero must rise once more to face a threat unlike any before. With allies old and new, Batman embarks on his most dangerous mission yet.",
+                poster_path: "https://images.unsplash.com/photo-1509347528160-9a9e33742cdb?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1478720568477-152d9b164e26?w=1920&h=1080&fit=crop",
+                release_date: "2024-01-15",
+                vote_average: 8.9,
+                genre_ids: [28, 80, 18],
+                runtime: 152,
+                tagline: "The legend returns when darkness falls"
+            },
+            {
+                id: 2,
+                title: "Galactic Odyssey",
+                overview: "A crew of astronauts discovers an ancient alien artifact at the edge of our solar system, leading them on a journey that will change humanity's understanding of the universe forever.",
+                poster_path: "https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1920&h=1080&fit=crop",
+                release_date: "2024-01-20",
+                vote_average: 8.5,
+                genre_ids: [878, 12, 18],
+                runtime: 168,
+                tagline: "Journey beyond the stars"
+            },
+            {
+                id: 3,
+                title: "Love in Paris",
+                overview: "Two strangers meet by chance at the Louvre and embark on a whirlwind romance through the streets of Paris, discovering that love can find you when you least expect it.",
+                poster_path: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1499856871958-5b9627545d1a?w=1920&h=1080&fit=crop",
+                release_date: "2024-01-10",
+                vote_average: 7.8,
+                genre_ids: [10749, 18, 35],
+                runtime: 124,
+                tagline: "A love story for the ages"
+            },
+            {
+                id: 4,
+                title: "Shadow Warriors",
+                overview: "An elite team of special forces operatives must infiltrate enemy territory to prevent a global catastrophe. Time is running out, and trust is a luxury they cannot afford.",
+                poster_path: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1533928298208-27ff66555d8d?w=1920&h=1080&fit=crop",
+                release_date: "2024-01-18",
+                vote_average: 8.2,
+                genre_ids: [28, 53, 10752],
+                runtime: 141,
+                tagline: "The mission that will change everything"
+            }
+        ];
+
+        const upcomingMovies = [
+            {
+                id: 5,
+                title: "The Haunting of Blackwood Manor",
+                overview: "A family moves into a centuries-old mansion, unaware of the dark secrets that lurk within its walls. Soon, they realize some doors should never be opened.",
+                poster_path: "https://images.unsplash.com/photo-1520013817300-1f4c1cb245ef?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=1920&h=1080&fit=crop",
+                release_date: "2024-02-22",
+                vote_average: 0,
+                genre_ids: [27, 9648, 53],
+                runtime: 118,
+                tagline: "Some houses remember their dead"
+            },
+            {
+                id: 6,
+                title: "Racing Hearts",
+                overview: "A young street racer with a troubled past gets a chance to compete in the world's most prestigious racing championship, but must confront old demons to cross the finish line.",
+                poster_path: "https://images.unsplash.com/photo-1568605117036-5fe5e7bab0b7?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=1920&h=1080&fit=crop",
+                release_date: "2024-03-15",
+                vote_average: 0,
+                genre_ids: [28, 18, 10751],
+                runtime: 135,
+                tagline: "Speed is the only escape"
+            },
+            {
+                id: 7,
+                title: "Emerald Kingdom",
+                overview: "In a magical realm where nature spirits dwell, a young princess must unite the four elemental kingdoms to defeat an ancient evil threatening to consume the world.",
+                poster_path: "https://images.unsplash.com/photo-1518709766631-a6a7f45921c3?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1920&h=1080&fit=crop",
+                release_date: "2024-02-28",
+                vote_average: 0,
+                genre_ids: [14, 12, 16],
+                runtime: 145,
+                tagline: "A kingdom divided must unite"
+            },
+            {
+                id: 8,
+                title: "Cyber Nexus",
+                overview: "In 2089, a hacker uncovers a conspiracy that could destroy the digital infrastructure of the entire world. Racing against time, she must navigate both virtual and real dangers.",
+                poster_path: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=500&h=750&fit=crop",
+                backdrop_path: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=1920&h=1080&fit=crop",
+                release_date: "2024-03-08",
+                vote_average: 0,
+                genre_ids: [878, 28, 53],
+                runtime: 138,
+                tagline: "The future is not what it seems"
+            }
+        ];
+
+        // Genre mapping
+        const genres = {
+            28: "Action",
+            12: "Adventure",
+            16: "Animation",
+            35: "Comedy",
+            80: "Crime",
+            99: "Documentary",
+            18: "Drama",
+            10751: "Family",
+            14: "Fantasy",
+            36: "History",
+            27: "Horror",
+            10402: "Music",
+            9648: "Mystery",
+            10749: "Romance",
+            878: "Science Fiction",
+            10770: "TV Movie",
+            53: "Thriller",
+            10752: "War",
+            37: "Western"
+        };
+
+        // ============================================
+        // STATE MANAGEMENT
+        // ============================================
+        
+        let currentMovie = null;
+        let selectedDate = null;
+        let selectedTime = null;
+        let selectedTickets = 1;
+        let selectedSeats = [];
+        let selectedPaymentMethod = 'visa';
+        let currentStep = 1;
+        const ticketPrice = 15.00;
+
+        // ============================================
+        // DOM ELEMENTS
+        // ============================================
+        
+        const nowPlayingContainer = document.getElementById('now-playing-movies');
+        const comingSoonContainer = document.getElementById('coming-soon-movies');
+        const datesContainer = document.getElementById('dates-container');
+        const showtimesContainer = document.getElementById('showtimes-container');
+        const movieModal = document.getElementById('movie-modal');
+        const bookingModal = document.getElementById('booking-modal');
+        const searchInput = document.getElementById('search-input');
+        const searchBtn = document.getElementById('search-btn');
+
+        // ============================================
+        // MOVIE LOADING FUNCTIONS
+        // ============================================
+        
+        function loadMovies() {
+            // Load Now Playing Movies
+            nowPlayingContainer.innerHTML = '';
+            nowPlayingMovies.forEach(movie => {
+                nowPlayingContainer.appendChild(createMovieCard(movie, true));
+            });
+            
+            // Load Coming Soon Movies
+            comingSoonContainer.innerHTML = '';
+            upcomingMovies.forEach(movie => {
+                comingSoonContainer.appendChild(createMovieCard(movie, false));
+            });
+        }
+
+        function createMovieCard(movie, isNowPlaying) {
+            const card = document.createElement('div');
+            card.className = 'movie-card';
+            card.innerHTML = `
+                <img src="${movie.poster_path}" alt="${movie.title}" class="movie-poster">
+                <div class="movie-info">
+                    <h3 class="movie-title">${movie.title}</h3>
+                    <div class="movie-meta">
+                        <span>${movie.runtime} min</span>
+                        <span class="rating">
+                            <i class="fas fa-star"></i> ${movie.vote_average > 0 ? movie.vote_average.toFixed(1) : 'Coming Soon'}
+                        </span>
+                    </div>
+                    <p class="movie-overview">${movie.overview}</p>
+                    <div class="movie-footer">
+                        <button class="btn-outline view-details" data-id="${movie.id}">
+                            <i class="fas fa-info-circle"></i> Details
+                        </button>
+                        ${isNowPlaying ? `
+                            <button class="btn-outline book-now" data-id="${movie.id}">
+                                <i class="fas fa-ticket-alt"></i> Book Ticket
+                            </button>
+                        ` : `
+                            <span class="release-date">${formatDisplayDate(movie.release_date)}</span>
+                        `}
+                    </div>
+                </div>
+            `;
+            
+            // Add event listeners
+            const viewBtn = card.querySelector('.view-details');
+            const bookBtn = card.querySelector('.book-now');
+            
+            viewBtn.addEventListener('click', () => showMovieDetails(movie.id));
+            if (bookBtn) {
+                bookBtn.addEventListener('click', () => window.startBooking(movie));
+            }
+            
+            return card;
+        }
+
+        // ============================================
+        // DATE AND SHOWTIME FUNCTIONS
+        // ============================================
+        
+        function loadDates() {
+            datesContainer.innerHTML = '';
+            const dates = generateDates();
+            
+            dates.forEach((date, index) => {
+                const dateElement = document.createElement('div');
+                dateElement.className = `date-item ${index === 0 ? 'active' : ''}`;
+                dateElement.innerHTML = `
+                    <div class="date-day">${date.day}</div>
+                    <div class="date-num">${date.date}</div>
+                    <div class="date-month">${date.month}</div>
+                `;
+                
+                dateElement.addEventListener('click', () => {
+                    document.querySelectorAll('.date-item').forEach(item => item.classList.remove('active'));
+                    dateElement.classList.add('active');
+                    selectedDate = date.full;
+                    loadShowtimes();
+                });
+                
+                datesContainer.appendChild(dateElement);
+            });
+        }
+
+        function loadShowtimes() {
+            showtimesContainer.innerHTML = '';
+            
+            // Show loading
+            showtimesContainer.innerHTML = '<div class="loading"><i class="fas fa-spinner"></i> Loading showtimes...</div>';
+            
+            // Simulate API delay
+            setTimeout(() => {
+                showtimesContainer.innerHTML = '';
+                
+                // Get movies for the selected date (for demo, show all now playing movies)
+                nowPlayingMovies.forEach(movie => {
+                    const showtimes = generateShowTimes();
+                    const showtimeElement = document.createElement('div');
+                    showtimeElement.className = 'showtime-movie';
+                    showtimeElement.innerHTML = `
+                        <img src="${movie.poster_path}" alt="${movie.title}" class="showtime-poster">
+                        <div class="showtime-info">
+                            <h3 class="showtime-title">${movie.title}</h3>
+                            <div class="showtime-meta">
+                                <span>${movie.runtime} min</span>
+                                <span>•</span>
+                                <span class="showtime-rating">
+                                    <i class="fas fa-star"></i> ${movie.vote_average.toFixed(1)}
+                                </span>
+                                <span>•</span>
+                                <span>${getGenres(movie.genre_ids)}</span>
+                            </div>
+                            <div class="showtime-times">
+                                ${showtimes.map(time => `
+                                    <div class="time-slot" data-time="${time}">${time}</div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Add event listeners to time slots
+                    const timeSlots = showtimeElement.querySelectorAll('.time-slot');
+                    timeSlots.forEach(slot => {
+                        slot.addEventListener('click', () => {
+                            document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+                            slot.classList.add('selected');
+                            selectedTime = slot.dataset.time;
+                        });
+                    });
+                    
+                    showtimesContainer.appendChild(showtimeElement);
+                });
+            }, 500);
+        }
+
+        function generateDates() {
+            const dates = [];
+            for (let i = 0; i < 7; i++) {
+                const date = new Date();
+                date.setDate(date.getDate() + i);
+                dates.push({
+                    day: date.toLocaleDateString('en-US', { weekday: 'short' }),
+                    date: date.getDate(),
+                    month: date.toLocaleDateString('en-US', { month: 'short' }),
+                    full: date.toISOString().split('T')[0],
+                });
+            }
+            return dates;
+        }
+
+        function generateShowTimes() {
+            return ['10:30 AM', '1:15 PM', '4:00 PM', '6:45 PM', '9:30 PM'];
+        }
+
+        // ============================================
+        // MOVIE DETAILS MODAL
+        // ============================================
+        
+        function showMovieDetails(movieId) {
+            const allMovies = [...nowPlayingMovies, ...upcomingMovies];
+            const movie = allMovies.find(m => m.id === movieId);
+            
+            if (!movie) return;
+            
+            currentMovie = movie;
+            
+            // Update modal content
+            document.getElementById('modal-title').textContent = movie.title;
+            document.getElementById('modal-tagline').textContent = movie.tagline;
+            document.getElementById('modal-runtime').textContent = `${movie.runtime} min`;
+            document.getElementById('modal-release-date').textContent = new Date(movie.release_date).getFullYear();
+            document.getElementById('modal-rating').innerHTML = `<i class="fas fa-star"></i> ${movie.vote_average > 0 ? movie.vote_average.toFixed(1) : 'Coming Soon'}`;
+            document.getElementById('modal-overview').textContent = movie.overview;
+            document.getElementById('modal-backdrop').style.backgroundImage = `url('${movie.backdrop_path}')`;
+            document.getElementById('modal-poster').src = movie.poster_path;
+            
+            // Update genres
+            const genresContainer = document.getElementById('modal-genres');
+            genresContainer.innerHTML = '';
+            movie.genre_ids.forEach(genreId => {
+                const genreElement = document.createElement('span');
+                genreElement.className = 'genre';
+                genreElement.textContent = genres[genreId] || 'Unknown';
+                genresContainer.appendChild(genreElement);
+            });
+            
+            // Show modal
+            movieModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // ============================================
+        // BOOKING FLOW FUNCTIONS
+        // ============================================
+        
+        function startBooking(movie) {
+            currentMovie = movie;
+            currentStep = 1;
+            selectedTickets = 1;
+            selectedSeats = [];
+            selectedTime = null;
+            
+            // Reset booking modal
+            resetBookingModal();
+            
+            // Hide login required message, show booking form
+            bookingLoginRequired.style.display = 'none';
+            bookingFormContainer.style.display = 'block';
+            
+            // Generate booking form
+            generateBookingForm();
+            
+            // Show booking modal
+            bookingModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function generateBookingForm() {
+            const bookingFormHTML = `
+                <div class="booking-progress">
+                    <div class="progress-step active" id="step1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">Movie & Time</div>
+                    </div>
+                    <div class="progress-step" id="step2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">Select Seats</div>
+                    </div>
+                    <div class="progress-step" id="step3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">Payment</div>
+                    </div>
+                    <div class="progress-step" id="step4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">Confirmation</div>
+                    </div>
+                    <div class="progress-line">
+                        <div class="progress-line-fill" id="progress-fill"></div>
+                    </div>
+                </div>
+                
+                <!-- Step 1: Select Date & Time -->
+                <form id="booking-step1" class="booking-form active">
+                    <h3 style="margin-bottom: 30px; font-size: 24px; color: white;">
+                        <i class="fas fa-film"></i> Select Date & Time
+                    </h3>
+                    
+                    <div class="form-group">
+                        <label for="selected-movie">
+                            <i class="fas fa-ticket-alt"></i> Selected Movie
+                        </label>
+                        <input type="text" id="selected-movie" value="${currentMovie.title}" readonly style="background: #222; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="booking-date">
+                                <i class="fas fa-calendar-alt"></i> Show Date
+                            </label>
+                            <select id="booking-date" required>
+                                <option value="">Select date</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="booking-time">
+                                <i class="fas fa-clock"></i> Show Time
+                            </label>
+                            <select id="booking-time" required>
+                                <option value="">Select time</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="booking-tickets">
+                            <i class="fas fa-user-friends"></i> Number of Tickets
+                        </label>
+                        <select id="booking-tickets" required>
+                            <option value="1">1 Ticket - $15.00</option>
+                            <option value="2">2 Tickets - $30.00</option>
+                            <option value="3">3 Tickets - $45.00</option>
+                            <option value="4">4 Tickets - $60.00</option>
+                            <option value="5">5 Tickets - $75.00</option>
+                            <option value="6">6 Tickets - $90.00</option>
+                        </select>
+                    </div>
+                    
+                    <div class="booking-navigation">
+                        <button type="button" class="btn-secondary" onclick="closeBookingModal()">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                        <button type="button" class="btn" onclick="nextStep(2)">
+                            Next: Select Seats <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Step 2: Select Seats -->
+                <form id="booking-step2" class="booking-form">
+                    <h3 style="margin-bottom: 30px; font-size: 24px; color: white;">
+                        <i class="fas fa-chair"></i> Select Your Seats
+                    </h3>
+                    
+                    <div class="seat-selection-container">
+                        <div class="screen">SCREEN</div>
+                        
+                        <div class="seat-map" id="seat-map">
+                            <!-- Seats will be generated here -->
+                        </div>
+                        
+                        <div class="seat-info">
+                            <div class="seat-legend">
+                                <div class="seat-color seat-available"></div>
+                                <span>Available</span>
+                            </div>
+                            <div class="seat-legend">
+                                <div class="seat-color seat-selected"></div>
+                                <span>Selected</span>
+                            </div>
+                            <div class="seat-legend">
+                                <div class="seat-color seat-occupied"></div>
+                                <span>Occupied</span>
+                            </div>
+                        </div>
+                        
+                        <div class="booking-summary" style="margin-top: 40px;">
+                            <div class="summary-row">
+                                <span>Movie:</span>
+                                <span id="summary-movie">${currentMovie.title}</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Date & Time:</span>
+                                <span id="summary-datetime">-</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Number of Tickets:</span>
+                                <span id="summary-tickets">1</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Selected Seats:</span>
+                                <span id="summary-seats">None</span>
+                            </div>
+                            <div class="summary-row summary-total">
+                                <span>Total Amount:</span>
+                                <span id="summary-total">$15.00</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-navigation">
+                        <button type="button" class="btn-secondary" onclick="prevStep(1)">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn" onclick="nextStep(3)">
+                            Next: Payment <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Step 3: Payment -->
+                <form id="booking-step3" class="booking-form">
+                    <h3 style="margin-bottom: 30px; font-size: 24px; color: white;">
+                        <i class="fas fa-credit-card"></i> Payment Information
+                    </h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="card-name">
+                                <i class="fas fa-user"></i> Name on Card
+                            </label>
+                            <input type="text" id="card-name" placeholder="John Doe" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-number">
+                                <i class="fas fa-credit-card"></i> Card Number
+                            </label>
+                            <input type="text" id="card-number" placeholder="1234 5678 9012 3456" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="card-expiry">
+                                <i class="fas fa-calendar"></i> Expiry Date
+                            </label>
+                            <input type="text" id="card-expiry" placeholder="MM/YY" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="card-cvv">
+                                <i class="fas fa-lock"></i> CVV
+                            </label>
+                            <input type="text" id="card-cvv" placeholder="123" required>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-methods">
+                        <div class="payment-method selected" onclick="selectPaymentMethod('visa')">
+                            <i class="fab fa-cc-visa"></i>
+                            <span>Visa</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('mastercard')">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <span>MasterCard</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('paypal')">
+                            <i class="fab fa-cc-paypal"></i>
+                            <span>PayPal</span>
+                        </div>
+                        <div class="payment-method" onclick="selectPaymentMethod('applepay')">
+                            <i class="fab fa-cc-apple-pay"></i>
+                            <span>Apple Pay</span>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-summary">
+                        <h3 style="margin-bottom: 20px; color: white;">Booking Summary</h3>
+                        <div class="summary-row">
+                            <span>Movie:</span>
+                            <span id="final-summary-movie">${currentMovie.title}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Date & Time:</span>
+                            <span id="final-summary-datetime">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Tickets:</span>
+                            <span id="final-summary-tickets">1</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Seats:</span>
+                            <span id="final-summary-seats">None</span>
+                        </div>
+                        <div class="summary-row summary-total">
+                            <span>Total Payment:</span>
+                            <span id="final-summary-total">$15.00</span>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-navigation">
+                        <button type="button" class="btn-secondary" onclick="prevStep(2)">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn" onclick="completeBooking()">
+                            <i class="fas fa-lock"></i> Confirm & Pay
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Step 4: Confirmation -->
+                <div id="booking-step4" class="booking-form success-modal">
+                    <div class="success-icon">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <h2 class="success-title">Booking Confirmed!</h2>
+                    <p class="success-message">
+                        Your tickets have been successfully booked. A confirmation email has been sent to your email address.
+                    </p>
+                    
+                    <div class="ticket-details">
+                        <h3>Ticket Details</h3>
+                        <div class="summary-row">
+                            <span>Booking ID:</span>
+                            <span id="confirmation-id">CINE-2024-001</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Movie:</span>
+                            <span id="confirmation-movie">${currentMovie.title}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Date & Time:</span>
+                            <span id="confirmation-datetime">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Seats:</span>
+                            <span id="confirmation-seats">-</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Total Paid:</span>
+                            <span id="confirmation-total">$15.00</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="closeBookingModal()" style="margin-top: 20px;">
+                        <i class="fas fa-home"></i> Return to Home
+                    </button>
+                </div>
+            `;
+            
+            bookingFormContainer.innerHTML = bookingFormHTML;
+            
+            // Initialize booking form
+            loadBookingDates();
+            setupBookingEventListeners();
+        }
+        
+        function loadBookingDates() {
+            const dateSelect = document.getElementById('booking-date');
+            if (!dateSelect) return;
+            
+            dateSelect.innerHTML = '<option value="">Select date</option>';
+            
+            const dates = generateDates();
+            dates.forEach(date => {
+                const option = document.createElement('option');
+                option.value = date.full;
+                option.textContent = `${date.day}, ${date.month} ${date.date}`;
+                if (date.full === selectedDate) {
+                    option.selected = true;
+                }
+                dateSelect.appendChild(option);
+            });
+            
+            // Load times for selected date
+            loadBookingTimes();
+        }
+        
+        function loadBookingTimes() {
+            const timeSelect = document.getElementById('booking-time');
+            if (!timeSelect) return;
+            
+            timeSelect.innerHTML = '<option value="">Select time</option>';
+            
+            const times = generateShowTimes();
+            times.forEach(time => {
+                const option = document.createElement('option');
+                option.value = time;
+                option.textContent = time;
+                timeSelect.appendChild(option);
+            });
+        }
+        
+        function setupBookingEventListeners() {
+            // Booking date change
+            const bookingDate = document.getElementById('booking-date');
+            if (bookingDate) {
+                bookingDate.addEventListener('change', loadBookingTimes);
+            }
+            
+            // Tickets change
+            const bookingTickets = document.getElementById('booking-tickets');
+            if (bookingTickets) {
+                bookingTickets.addEventListener('change', function() {
+                    selectedTickets = parseInt(this.value);
+                    selectedSeats = [];
+                    if (currentStep >= 2) {
+                        generateSeats();
+                        updateSeatSummary();
+                    }
+                });
+            }
+        }
+
+        function nextStep(step) {
+            // Validate current step before proceeding
+            if (step === 2) {
+                if (!validateStep1()) return;
+                updateBookingSummary();
+                generateSeats();
+            } else if (step === 3) {
+                if (!validateStep2()) return;
+                updateFinalSummary();
+            } else if (step === 4) {
+                if (!validateStep3()) return;
+                completeBooking();
+                return;
+            }
+            
+            // Hide current step
+            document.querySelector(`#booking-step${currentStep}`).classList.remove('active');
+            
+            // Show next step
+            document.querySelector(`#booking-step${step}`).classList.add('active');
+            
+            // Update current step
+            currentStep = step;
+            
+            // Update step indicators
+            updateStepIndicators();
+            
+            // Update progress bar
+            updateProgressBar();
+        }
+
+        function prevStep(step) {
+            // Hide current step
+            document.querySelector(`#booking-step${currentStep}`).classList.remove('active');
+            
+            // Show previous step
+            document.querySelector(`#booking-step${step}`).classList.add('active');
+            
+            // Update current step
+            currentStep = step;
+            
+            // Update step indicators
+            updateStepIndicators();
+            
+            // Update progress bar
+            updateProgressBar();
+        }
+
+        function updateStepIndicators() {
+            // Reset all steps
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                }
+            }
+            
+            // Mark previous steps as completed
+            for (let i = 1; i < currentStep; i++) {
+                const step = document.getElementById(`step${i}`);
+                if (step) {
+                    step.classList.add('completed');
+                }
+            }
+            
+            // Mark current step as active
+            const currentStepElement = document.getElementById(`step${currentStep}`);
+            if (currentStepElement) {
+                currentStepElement.classList.add('active');
+            }
+        }
+
+        function updateProgressBar() {
+            const progressFill = document.getElementById('progress-fill');
+            if (progressFill) {
+                const progress = ((currentStep - 1) / 3) * 100;
+                progressFill.style.width = `${progress}%`;
+            }
+        }
+
+        // ============================================
+        // VALIDATION FUNCTIONS
+        // ============================================
+        
+        function validateStep1() {
+            const date = document.getElementById('booking-date')?.value;
+            const time = document.getElementById('booking-time')?.value;
+            
+            if (!date || !time) {
+                showNotification('Please select both date and time', 'error');
+                return false;
+            }
+            
+            selectedDate = date;
+            selectedTime = time;
+            selectedTickets = parseInt(document.getElementById('booking-tickets').value);
+            
+            return true;
+        }
+
+        function validateStep2() {
+            if (selectedSeats.length === 0) {
+                showNotification('Please select at least one seat', 'error');
+                return false;
+            }
+            
+            if (selectedSeats.length !== selectedTickets) {
+                showNotification(`Please select exactly ${selectedTickets} seat(s)`, 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        function validateStep3() {
+            const cardName = document.getElementById('card-name')?.value.trim();
+            const cardNumber = document.getElementById('card-number')?.value.trim();
+            const cardExpiry = document.getElementById('card-expiry')?.value.trim();
+            const cardCvv = document.getElementById('card-cvv')?.value.trim();
+            
+            if (!cardName || !cardNumber || !cardExpiry || !cardCvv) {
+                showNotification('Please fill in all payment details', 'error');
+                return false;
+            }
+            
+            return true;
+        }
+
+        // ============================================
+        // SEAT SELECTION FUNCTIONS
+        // ============================================
+        
+        function generateSeats() {
+            const seatMap = document.getElementById('seat-map');
+            if (!seatMap) return;
+            
+            seatMap.innerHTML = '';
+            
+            // Generate 8 rows (A-H) with 12 seats each
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            
+            rows.forEach(row => {
+                for (let seatNum = 1; seatNum <= 12; seatNum++) {
+                    const seatId = `${row}${seatNum}`;
+                    const seat = document.createElement('div');
+                    seat.className = 'seat';
+                    seat.textContent = seatId;
+                    seat.dataset.seat = seatId;
+                    
+                    // Randomly mark some seats as occupied (for demo)
+                    if (Math.random() < 0.3) {
+                        seat.classList.add('occupied');
+                    }
+                    
+                    seat.addEventListener('click', () => toggleSeat(seat));
+                    seatMap.appendChild(seat);
+                }
+            });
+        }
+
+        function toggleSeat(seatElement) {
+            if (seatElement.classList.contains('occupied')) return;
+            
+            const seatId = seatElement.dataset.seat;
+            const index = selectedSeats.indexOf(seatId);
+            
+            if (index === -1) {
+                // Don't allow selecting more seats than tickets
+                if (selectedSeats.length >= selectedTickets) {
+                    showNotification(`You can only select ${selectedTickets} seat(s)`, 'error');
+                    return;
+                }
+                selectedSeats.push(seatId);
+                seatElement.classList.add('selected');
+            } else {
+                selectedSeats.splice(index, 1);
+                seatElement.classList.remove('selected');
+            }
+            
+            updateSeatSummary();
+        }
+
+        // ============================================
+        // SUMMARY & PAYMENT FUNCTIONS
+        // ============================================
+        
+        function updateBookingSummary() {
+            const dateObj = new Date(selectedDate);
+            const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            
+            document.getElementById('summary-datetime').textContent = `${dateStr} at ${selectedTime}`;
+            document.getElementById('summary-tickets').textContent = selectedTickets;
+            document.getElementById('summary-seats').textContent = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None';
+            
+            const total = selectedTickets * ticketPrice;
+            document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateSeatSummary() {
+            document.getElementById('summary-seats').textContent = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'None';
+            
+            const total = selectedTickets * ticketPrice;
+            document.getElementById('summary-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateFinalSummary() {
+            const dateObj = new Date(selectedDate);
+            const dateStr = dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+            
+            document.getElementById('final-summary-datetime').textContent = `${dateStr} at ${selectedTime}`;
+            document.getElementById('final-summary-tickets').textContent = selectedTickets;
+            document.getElementById('final-summary-seats').textContent = selectedSeats.join(', ');
+            
+            const total = selectedTickets * ticketPrice;
+            document.getElementById('final-summary-total').textContent = `$${total.toFixed(2)}`;
+            
+            // Also update confirmation section
+            document.getElementById('confirmation-datetime').textContent = `${dateStr} at ${selectedTime}`;
+            document.getElementById('confirmation-seats').textContent = selectedSeats.join(', ');
+            document.getElementById('confirmation-total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            
+            // Update UI
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            event.target.closest('.payment-method').classList.add('selected');
+        }
+
+        function completeBooking() {
+            // Show loading state
+            const payBtn = document.querySelector('#booking-step3 .btn');
+            const originalText = payBtn.innerHTML;
+            payBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            payBtn.disabled = true;
+            
+            // Simulate payment processing
+            setTimeout(() => {
+                // Success - move to confirmation step
+                nextStep(4);
+                
+                // Generate random booking ID
+                const bookingId = `CINE-${new Date().getFullYear()}-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`;
+                document.getElementById('confirmation-id').textContent = bookingId;
+                
+                // Save booking to user's account
+                saveUserBooking(bookingId);
+                
+                // Reset button
+                payBtn.innerHTML = originalText;
+                payBtn.disabled = false;
+                
+                // Show success notification
+                showNotification('Booking confirmed! Check your email for details.', 'success');
+            }, 2000);
+        }
+        
+        function saveUserBooking(bookingId) {
+            if (!currentUser) return;
+            
+            const booking = {
+                id: bookingId,
+                movie: currentMovie.title,
+                date: selectedDate,
+                time: selectedTime,
+                seats: selectedSeats,
+                tickets: selectedTickets,
+                total: selectedTickets * ticketPrice,
+                bookingDate: new Date().toISOString()
+            };
+            
+            // Add booking to user
+            const userIndex = users.findIndex(u => u.email === currentUser.email);
+            if (userIndex !== -1) {
+                if (!users[userIndex].bookings) {
+                    users[userIndex].bookings = [];
+                }
+                users[userIndex].bookings.push(booking);
+                
+                // Update localStorage
+                localStorage.setItem('cineprime_users', JSON.stringify(users));
+                
+                // Update current user
+                currentUser.bookings = users[userIndex].bookings;
+                localStorage.setItem('cineprime_current_user', JSON.stringify(currentUser));
+            }
+        }
+
+        // ============================================
+        // HELPER FUNCTIONS
+        // ============================================
+        
+        function getGenres(genreIds) {
+            return genreIds.map(id => genres[id]).slice(0, 2).join(', ');
+        }
+
+        function formatDate(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDisplayDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function updateSelectedDate() {
+            const dateElements = document.querySelectorAll('.date-item');
+            dateElements.forEach(el => {
+                const dateNum = parseInt(el.querySelector('.date-num').textContent);
+                const today = new Date();
+                if (dateNum === today.getDate()) {
+                    el.classList.add('active');
+                }
+            });
+        }
+
+        function resetBookingModal() {
+            currentStep = 1;
+            selectedDate = formatDate(new Date());
+            selectedTime = null;
+            selectedTickets = 1;
+            selectedSeats = [];
+        }
+
+        function closeBookingModal() {
+            bookingModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Reset to show login required message
+            bookingLoginRequired.style.display = 'block';
+            bookingFormContainer.style.display = 'none';
+        }
+
+        function closeMovieModal() {
+            movieModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        // ============================================
+        // EVENT LISTENERS SETUP
+        // ============================================
+        
+        function setupEventListeners() {
+            // Close modals
+            document.getElementById('close-modal')?.addEventListener('click', closeMovieModal);
+            document.getElementById('close-booking-modal')?.addEventListener('click', closeBookingModal);
+            
+            // Book ticket button in movie modal
+            document.getElementById('book-ticket-btn')?.addEventListener('click', function() {
+                if (currentMovie) {
+                    closeMovieModal();
+                    window.startBooking(currentMovie);
+                }
+            });
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', function(event) {
+                if (event.target === movieModal) closeMovieModal();
+                if (event.target === bookingModal) closeBookingModal();
+            });
+            
+            // Weather simulation
+            function updateWeather() {
+                const conditions = ['Sunny', 'Cloudy', 'Rainy', 'Partly Cloudy'];
+                const temperatures = [25, 27, 22, 26, 28, 24];
+                const randomCondition = conditions[Math.floor(Math.random() * conditions.length)];
+                const randomTemp = temperatures[Math.floor(Math.random() * temperatures.length)];
+                
+                const weatherTemp = document.querySelector('.weather-temp');
+                const weatherCondition = document.querySelector('.weather-condition');
+                const weatherIcon = document.querySelector('.weather-info i');
+                
+                if (weatherTemp) weatherTemp.textContent = `${randomTemp}°C`;
+                if (weatherCondition) weatherCondition.textContent = randomCondition;
+                
+                if (weatherIcon) {
+                    if (randomCondition === 'Sunny') {
+                        weatherIcon.className = 'fas fa-sun';
+                        weatherIcon.style.color = '#ffc107';
+                    } else if (randomCondition === 'Rainy') {
+                        weatherIcon.className = 'fas fa-cloud-rain';
+                        weatherIcon.style.color = '#007bff';
+                    } else {
+                        weatherIcon.className = 'fas fa-cloud';
+                        weatherIcon.style.color = '#6c757d';
+                    }
+                }
+            }
+            
+            // Update weather every 30 seconds (for demo purposes)
+            setInterval(updateWeather, 30000);
+            updateWeather(); // Initial call
+            
+            // Navigation smooth scroll
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        // Update active nav link
+                        document.querySelectorAll('.nav-links a').forEach(link => {
+                            link.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                        
+                        // Scroll to target
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 100,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        }
+    </script>
+</body>
+</html>
